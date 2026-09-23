@@ -1,4 +1,4 @@
-using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,8 +19,8 @@ using Microsoft.VisualBasic;
 [assembly: CompilationRelaxations(8)]
 [assembly: AssemblyProduct("Suporte Infocenter")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
-[assembly: AssemblyFileVersion("1.2.0.0")]
-[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
 namespace AtualizadorGUI
 {
 	internal static class Cores
@@ -186,7 +186,7 @@ namespace AtualizadorGUI
 	{
 		private const string URL_VERSAO = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/versao.txt";
 		private const string URL_EXE = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/SuporteInfocenter.exe";
-		private const string VERSAO_ATUAL = "1.2.0.0";
+		private const string VERSAO_ATUAL = "1.3.0.0";
 		private BotaoRounded btnUpdateApp;
 
 		private const string BASE_UP = "https://www.codigoup.com/painel/files/UpSystem%20v";
@@ -206,6 +206,22 @@ namespace AtualizadorGUI
 		private CardPainel cardForca;
 
 		private CardPainel cardLog;
+
+		private Panel pnlTabs;
+		private BotaoRounded btnTabDownloads;
+		private BotaoRounded btnTabLocal;
+		private Panel pnlMainArea;
+		private Panel pnlDownloads;
+		private Panel pnlLocal;
+		private CheckedListBox chkDownloads;
+		private Label lblPastaDestino;
+		private TextBox txtDestino;
+		private BotaoRounded btnProcurar;
+		private BotaoRounded btnBaixarSelecionados;
+		private BotaoRounded btnAbrirLocal;
+		private List<SistemaDownload> listaDownloadsDisponiveis = new List<SistemaDownload>();
+		private const string ECARRINHO_URL = "https://www.ecarrinho.com/api/agent/version?channel=stable&platform=windows-x64";
+		private const string GESYNC_URL = "https://download.geplug.com.br/GeSyncSetup.zip";
 
 		private Label lblUpTitulo;
 
@@ -262,6 +278,7 @@ namespace AtualizadorGUI
 			{
 				InicializarDeteccao();
 				ChecarAtualizacaoSuporte();
+				BuscarVersoesPainelDownloads();
 			};
 			base.Shown += value;
 		}
@@ -399,7 +416,7 @@ namespace AtualizadorGUI
 					{
 						string arg = (ok ? string.Format("{0}-{1}-{2}", maj, min, pat) : "Não detectada");
 						lblUpVersao.Text = (ok ? string.Format("Versão local: {0}", arg) : "Nenhum arquivo local encontrado");
-						lblUpStatus.Text = (ok ? "✔ Local OK" : "⚠ Não encontrado");
+						lblUpStatus.Text = (ok ? "âœ” Local OK" : "âš  Não encontrado");
 						lblUpStatus.ForeColor = (ok ? Cores.Verde : Cores.Vermelho);
 						lblUpPasta.Text = "Pasta: " + pathUp;
 					}
@@ -407,7 +424,7 @@ namespace AtualizadorGUI
 					{
 						string arg2 = (ok ? string.Format("{0}-{1}", maj, pat) : "Não detectada");
 						lblForcaVersao.Text = (ok ? string.Format("Versão local: {0}", arg2) : "Nenhum arquivo local encontrado");
-						lblForcaStatus.Text = (ok ? "✔ Local OK" : "⚠ Não encontrado");
+						lblForcaStatus.Text = (ok ? "âœ” Local OK" : "âš  Não encontrado");
 						lblForcaStatus.ForeColor = (ok ? Cores.Verde : Cores.Vermelho);
 						lblForcaPasta.Text = "Pasta: " + pathForca;
 					}
@@ -443,7 +460,7 @@ namespace AtualizadorGUI
 			};
 			lblEmpresa = new Label
 			{
-				Text = "ATUALIZAÇÃO DE SISTEMA",
+				Text = "ATUALIZAÃ‡ÃƒO DE SISTEMA",
 				Font = new Font("Segoe UI", 13f, FontStyle.Bold),
 				ForeColor = Color.White,
 				AutoSize = true
@@ -455,14 +472,14 @@ namespace AtualizadorGUI
 				ForeColor = Color.FromArgb(1, 150, 218),
 				AutoSize = true
 			};
-			btnMinimizar = CriarBotaoSistema("—", 14f);
+			btnMinimizar = CriarBotaoSistema("-", 14f);
 			btnMinimizar.Location = new Point(base.Width - 78, 0);
 			btnMinimizar.Size = new Size(38, 36);
 			btnMinimizar.Click += delegate
 			{
 				base.WindowState = FormWindowState.Minimized;
 			};
-			btnFechar = CriarBotaoSistema("✕", 13f);
+			btnFechar = CriarBotaoSistema("X", 13f);
 			btnFechar.Location = new Point(base.Width - 40, 0);
 			btnFechar.Size = new Size(38, 36);
 			btnFechar.BackColor = Color.FromArgb(200, 60, 50);
@@ -503,23 +520,22 @@ namespace AtualizadorGUI
 			Panel value = panel;
 			pnlHeader.Controls.Add(value);
 			pnlHeader.Controls.AddRange(new Control[4] { lblEmpresa, lblSubtitulo, btnMinimizar, btnFechar });
-			
 			btnUpdateApp = new BotaoRounded
 			{
-				Text = "NOVA VERSÃO DISPONÍVEL! CLIQUE PARA ATUALIZAR O SUPORTE INFOCENTER.",
-				Dock = DockStyle.Top,
-				Height = 40,
-				NormalColor = Cores.Laranja,
-				HoverColor = Color.Red,
-				BackColor = Cores.FundoApp,
+				Text = "Suporte: Atualizado",
+				Location = new Point(base.Width - 252, 24),
+				Size = new Size(160, 32),
+				NormalColor = Cores.Verde,
+				HoverColor = Color.MediumSeaGreen,
+				BackColor = Cores.NavyEscuro,
 				ForeColor = Color.White,
-				Font = new Font("Segoe UI", 11f, FontStyle.Bold),
-				Visible = false,
+				Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+				Visible = true,
 				Cursor = Cursors.Hand
 			};
 			btnUpdateApp.Click += BtnUpdateApp_Click;
 
-			base.Controls.Add(btnUpdateApp);
+			pnlHeader.Controls.Add(btnUpdateApp);
 			base.Controls.Add(pnlHeader);
 			lblStatusBar = new Label
 			{
@@ -533,7 +549,7 @@ namespace AtualizadorGUI
 			};
 			lblVersaoApp = new Label
 			{
-				Text = "Versão 1.2",
+				Text = "Versão " + VERSAO_ATUAL,
 				Font = new Font("Segoe UI", 9f, FontStyle.Bold),
 				ForeColor = Color.FromArgb(120, 130, 140),
 				Location = new Point(558, 600),
@@ -546,7 +562,7 @@ namespace AtualizadorGUI
 			cardForca = CriarCard(new Point(350, 95), new Size(310, 255));
 			ConstruirCardUp();
 			ConstruirCardForca();
-			base.Controls.AddRange(new Control[2] { cardUp, cardForca });
+			ConstruirAbas();
 			cardLog = CriarCard(new Point(20, 370), new Size(640, 210));
 			cardLog.CustomFundoColor = Cores.FundoLog;
 			rtbLog = new RichTextBox
@@ -573,6 +589,772 @@ namespace AtualizadorGUI
 			cardPainel.BackColor = Cores.FundoApp;
 			return cardPainel;
 		}
+
+				private void ConstruirAbas()
+		{
+			pnlTabs = new Panel
+			{
+				Location = new Point(0, 80),
+				Size = new Size(680, 45),
+				BackColor = Cores.FundoApp
+			};
+			
+			btnTabDownloads = new BotaoRounded
+			{
+				Text = "Downloads",
+				Location = new Point(20, 5),
+				Size = new Size(150, 35),
+				NormalColor = Cores.AzulClaro,
+				HoverColor = Color.LightSkyBlue,
+				BackColor = Cores.FundoApp,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+				Cursor = Cursors.Hand
+			};
+			btnTabDownloads.Click += (s, e) => AlternarAba(1);
+
+			btnTabLocal = new BotaoRounded
+			{
+				Text = "Atualizador Local",
+				Location = new Point(180, 5),
+				Size = new Size(180, 35),
+				NormalColor = Cores.NavyMedio,
+				HoverColor = Color.FromArgb(70, 70, 90),
+				BackColor = Cores.FundoApp,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+				Cursor = Cursors.Hand
+			};
+			btnTabLocal.Click += (s, e) => AlternarAba(0);
+			
+			btnTabRotinas = new BotaoRounded { Text = "Rotinas", Location = new Point(380, 5), Size = new Size(150, 35), NormalColor = Cores.NavyMedio, HoverColor = Color.FromArgb(70, 70, 90), BackColor = Cores.FundoApp, ForeColor = Color.White, Font = new Font("Segoe UI", 10f, FontStyle.Bold), Cursor = Cursors.Hand }; btnTabRotinas.Click += (s, e) => AlternarAba(2); pnlTabs.Controls.AddRange(new Control[3] { btnTabDownloads, btnTabLocal, btnTabRotinas });
+			base.Controls.Add(pnlTabs);
+			
+			pnlMainArea = new Panel
+			{
+				Location = new Point(0, 125),
+				Size = new Size(680, 245),
+				BackColor = Cores.FundoApp
+			};
+			base.Controls.Add(pnlMainArea);
+			
+			pnlLocal = new Panel
+			{
+				Dock = DockStyle.Fill,
+				BackColor = Cores.FundoApp,
+				Visible = false
+			};
+			cardUp = CriarCard(new Point(20, 0), new Size(310, 245));
+			cardForca = CriarCard(new Point(350, 0), new Size(310, 245));
+			ConstruirCardUp();
+			ConstruirCardForca();
+			pnlLocal.Controls.AddRange(new Control[2] { cardUp, cardForca });
+			
+			pnlDownloads = new Panel
+			{
+				Dock = DockStyle.Fill,
+				BackColor = Cores.FundoApp,
+				Visible = true
+			};
+			ConstruirPainelDownloads();
+			
+			ConstruirPainelRotinas(); pnlMainArea.Controls.AddRange(new Control[3] { pnlDownloads, pnlLocal, pnlRotinas });
+		}
+		
+		private void AlternarAba(int abaId)
+		{
+			pnlDownloads.Visible = (abaId == 1);
+			pnlLocal.Visible = (abaId == 0);
+			pnlRotinas.Visible = (abaId == 2);
+			btnTabDownloads.NormalColor = (abaId == 1) ? Cores.AzulClaro : Cores.NavyMedio;
+			btnTabLocal.NormalColor = (abaId == 0) ? Cores.AzulClaro : Cores.NavyMedio;
+			btnTabRotinas.NormalColor = (abaId == 2) ? Cores.AzulClaro : Cores.NavyMedio;
+			btnTabRotinas.Refresh();
+			btnTabDownloads.Refresh();
+			btnTabLocal.Refresh();
+		}
+
+				private BotaoRounded btnTabRotinas;
+		private Panel pnlRotinas;
+		private CheckedListBox chkRotinas;
+		private BotaoRounded btnExecutarRotinas;
+
+		private void ConstruirPainelRotinas()
+		{
+			pnlRotinas = new Panel
+			{
+				Dock = DockStyle.Fill,
+				BackColor = Cores.FundoApp,
+				Visible = false
+			};
+			
+			Label lblTitulo = new Label
+			{
+				Text = "Quais rotinas deseja executar?",
+				Location = new Point(20, 0),
+				AutoSize = true,
+				Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+				ForeColor = Color.White
+			};
+			
+			chkRotinas = new CheckedListBox
+			{
+				Location = new Point(20, 25),
+				Size = new Size(640, 150),
+				BackColor = Cores.FundoCard,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 11f),
+				BorderStyle = BorderStyle.FixedSingle,
+				CheckOnClick = true
+			};
+			chkRotinas.Items.Add("Copiar Certificados e Imagens do ERP", false);
+			chkRotinas.Items.Add("Permissões, Portas e Compartilhamento ERP", false);
+			chkRotinas.Items.Add("Instalação do Força de Vendas como Serviço (NSSM)", false);
+			
+			btnExecutarRotinas = new BotaoRounded
+			{
+				Text = "Executar Selecionadas",
+				Location = new Point(20, 190),
+				Size = new Size(200, 35),
+				NormalColor = Cores.Laranja,
+				HoverColor = Color.Orange,
+				BackColor = Cores.FundoApp,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 9f, FontStyle.Bold)
+			};
+			btnExecutarRotinas.Click += BtnExecutarRotinas_Click;
+			
+			pnlRotinas.Controls.AddRange(new Control[3] { lblTitulo, chkRotinas, btnExecutarRotinas });
+		}
+		
+		private void BtnExecutarRotinas_Click(object sender, EventArgs e)
+		{
+			if (chkRotinas.CheckedItems.Count == 0)
+			{
+				MessageBox.Show("Selecione pelo menos uma rotina.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+			
+			foreach (object item in chkRotinas.CheckedItems)
+			{
+				string rotina = item.ToString();
+				Log("Iniciando: " + rotina, Cores.TextoLog);
+				
+				if (rotina.Contains("Certificados e Imagens"))
+				{
+					RodarScriptEmbutido("COPIAR_CERT_IMAGENS_SERV_ERP.bat", ObterBatCopiarCertImagens());
+				}
+				else if (rotina.Contains("Permissões, Portas"))
+				{
+					RodarScriptEmbutido("PERMISSOES_PORTAS_COMPARTILHAR_ERP.bat", ObterBatPermissoesPortas());
+				}
+				else if (rotina.Contains("Força de Vendas como Serviço"))
+				{
+					ExecutarInstalacaoServicoNSSM();
+				}
+			}
+		}
+		
+		private void RodarScriptEmbutido(string nomeArquivo, string conteudo)
+		{
+			string tempPath = Path.Combine(Path.GetTempPath(), nomeArquivo);
+			try {
+				File.WriteAllText(tempPath, conteudo, System.Text.Encoding.Default);
+				ProcessStartInfo psi = new ProcessStartInfo {
+					FileName = tempPath,
+					UseShellExecute = true,
+					Verb = "runas"
+				};
+				Process.Start(psi);
+				Log("Executado com sucesso: " + nomeArquivo, Cores.Verde);
+			} catch (Exception ex) {
+				Log("Erro ao executar " + nomeArquivo + ": " + ex.Message, Color.Red);
+			}
+		}
+
+		
+		
+		private string ObterBatCopiarCertImagens() {
+			return @"@echo off
+setlocal enabledelayedexpansion
+
+:: Arquivos de configuracao
+set ""CONF_INI=C:\UpSystem\CONF.INI""
+set ""CONFIG_ARQUIVOS_INI=C:\UpSystem\CONFIGARQUIVOS.INI""
+
+set ""SRV=""
+set ""DIRETORIO_ORIGEM=""
+
+echo ===================================================
+echo     SCRIPT DE TRAZER CERTIFICADOS E IMAGENS
+echo ===================================================
+echo.
+
+:: --- NOVIDADE AQUI: Solicitando diretorio de destino ---
+set ""DESTINO_PADRAO=C:\UpSystem\""
+set ""DESTINO=""
+
+echo Digite o diretorio de destino ou pressione ENTER para usar o padrao:
+echo [%DESTINO_PADRAO%]
+set /p ""DESTINO=> ""
+
+:: Se o usuario apenas apertou ENTER (variavel vazia), usa o padrao
+if ""!DESTINO!""=="""" set ""DESTINO=!DESTINO_PADRAO!""
+
+:: Garante que o diretorio de destino termine sempre com barra invertida (\)
+if not ""!DESTINO:~-1!""==""\"" set ""DESTINO=!DESTINO!\""
+
+:: Cria a pasta de destino caso o usuario tenha digitado um caminho que ainda nao existe
+if not exist ""!DESTINO!"" (
+    echo.
+    echo [INFO] Criando diretorio de destino !DESTINO!...
+    mkdir ""!DESTINO!""
+)
+
+echo.
+:: 1. Busca o IP no CONF.INI
+if exist ""%CONF_INI%"" (
+    for /f ""tokens=1,* delims=="" %%a in ('type ""%CONF_INI%"" ^| findstr /b /i ""SRV=""') do (
+        set ""SRV=%%b""
+    )
+) else (
+    echo [ERRO] Arquivo %CONF_INI% nao encontrado.
+    pause
+    exit /b
+)
+
+:: Limpa possiveis espacos em branco do valor capturado
+set ""SRV=%SRV: =%""
+
+:: 2. Verifica se o servidor e localhost
+if /i ""%SRV%""==""localhost"" (
+    echo [INFO] Servidor local detectado. Buscando caminho no CONFIGARQUIVOS.INI...
+    if exist ""%CONFIG_ARQUIVOS_INI%"" (
+        for /f ""tokens=1,* delims=="" %%a in ('type ""%CONFIG_ARQUIVOS_INI%"" ^| findstr /b /i ""exeremoto=""') do (
+            set ""LINHA_EXE=%%b""
+            :: Remove espacos em branco da linha caso existam
+            set ""LINHA_EXE=!LINHA_EXE: =!""
+            :: Extrai dinamicamente apenas a pasta do executavel
+            for %%I in (""!LINHA_EXE!"") do set ""DIRETORIO_ORIGEM=%%~dpI""
+        )
+    ) else (
+        echo [ERRO] Arquivo %CONFIG_ARQUIVOS_INI% nao encontrado.
+        pause
+        exit /b
+    )
+) else (
+    :: Se nao for localhost, monta o caminho de rede padrao
+    echo [INFO] Servidor de rede detectado: %SRV%
+    set ""DIRETORIO_ORIGEM=\\%SRV%\upsystem\""
+)
+
+:: Verifica se a origem foi definida corretamente
+if ""!DIRETORIO_ORIGEM!""=="""" (
+    echo [ERRO] Nao foi possivel determinar o diretorio de origem.
+    pause
+    exit /b
+)
+
+echo.
+echo [ORIGEM]  !DIRETORIO_ORIGEM!
+echo [DESTINO] !DESTINO!
+echo.
+echo Iniciando a copia dos arquivos .pfx, .png, .jpg e .jpeg...
+echo.
+
+:: 3. Copia todos os arquivos da origem para o destino
+xcopy /Y /D /C ""!DIRETORIO_ORIGEM!*.pfx"" ""!DESTINO!"" 2>nul
+xcopy /Y /D /C ""!DIRETORIO_ORIGEM!*.png"" ""!DESTINO!"" 2>nul
+xcopy /Y /D /C ""!DIRETORIO_ORIGEM!*.jpg"" ""!DESTINO!"" 2>nul
+xcopy /Y /D /C ""!DIRETORIO_ORIGEM!*.jpeg"" ""!DESTINO!"" 2>nul
+
+echo.
+echo [SUCESSO] Varredura e copia concluidas.
+echo.
+pause";
+		}
+
+		private string ObterBatPermissoesPortas() {
+			return @"title by: Yago Rocha - Infocenter Automacao
+@echo off
+chcp 65001
+setlocal
+
+:: Defina o caminho da pasta
+set ""Pasta=C:\UpSystem""
+
+:: Verifique se a pasta existe
+if not exist ""%Pasta%"" (
+    echo [ERRO] A pasta %Pasta% não existe.
+    pause
+    exit /b
+)
+
+:: Conceda controle total para os grupos e usuários especificados
+echo Concedendo controle total para ""Todos""...
+icacls ""%Pasta%"" /grant ""Todos:(OI)(CI)F"" /T /C >nul 2>&1
+
+echo Concedendo controle total para ""Usuários""...
+icacls ""%Pasta%"" /grant ""Usuários:(OI)(CI)F"" /T /C >nul 2>&1
+
+echo Concedendo controle total para ""Rede""...
+icacls ""%Pasta%"" /grant ""Rede:(OI)(CI)F"" /T /C >nul 2>&1
+
+echo Concedendo controle total para ""Administrador""...
+icacls ""%Pasta%"" /grant ""Administrador:(OI)(CI)F"" /T /C >nul 2>&1
+
+echo Concedendo controle total para ""Administradores""...
+icacls ""%Pasta%"" /grant ""Administradores:(OI)(CI)F"" /T /C >nul 2>&1
+
+echo Concedendo controle total para ""SISTEMA""...
+icacls ""%Pasta%"" /grant ""SISTEMA:(OI)(CI)F"" /T /C >nul 2>&1
+
+echo Concedendo controle total para ""Usuários autenticados""...
+icacls ""%Pasta%"" /grant ""Usuários autenticados:(OI)(CI)F"" /T /C >nul 2>&1
+
+:: Remova a herança de permissões
+echo Removendo herança de permissões da pasta %Pasta%...
+icacls ""%Pasta%"" /inheritance:r
+
+:: Verifique o status da execução
+if errorlevel 1 (
+    echo [ERRO] Falha ao aplicar permissões.
+) else (
+    echo Permissões aplicadas com sucesso.
+)
+
+echo --------------------------------------------------------------------------------------
+
+Echo Compartilhando pasta do sistema
+
+net share UpSystem=C:\UpSystem /grant:Todos,FULL
+
+echo --------------------------------------------------------------------------------------
+
+
+:: Adiciona regras do firewall
+echo Adicionando regras do firewall...
+
+for %%P in (3050 8082 2018 7079 1080) do (
+    netsh advfirewall firewall add rule name=""up-TCP-%%P"" action=allow protocol=TCP dir=in localport=%%P >nul 2>&1
+    netsh advfirewall firewall add rule name=""up-UDP-%%P"" action=allow protocol=UDP dir=in localport=%%P >nul 2>&1
+    netsh advfirewall firewall add rule name=""up-TCP-%%P"" action=allow protocol=TCP dir=out localport=%%P >nul 2>&1
+    netsh advfirewall firewall add rule name=""up-UDP-%%P"" action=allow protocol=UDP dir=out localport=%%P >nul 2>&1
+)
+
+echo Regras do firewall adicionadas com sucesso.
+
+
+echo --------------------------------------------------------------------------------------
+
+
+:: Adiciona exclusões ao Windows Defender
+echo Adicionando exclusões ao Windows Defender...
+
+powershell -Command Add-MpPreference -ExclusionPath 'C:\Program Files (x86)\MasterRemote','C:\ProgramData\MasterRemote','C:\UpSystem'
+
+echo Exclusões do Windows Defender adicionadas com sucesso.
+
+
+echo --------------------------------------------------------------------------------------
+
+
+:: Configurações de falha dos serviços
+echo Configurando ações de falha dos serviços...
+
+:: Defina os nomes dos serviços em uma lista
+set ""services=FirebirdServerDefaultInstance Spooler""
+
+:: Loop para aplicar as mesmas configurações de falha para todos os serviços
+for %%S in (%services%) do (
+    echo Configurando ações de falha para %%S...
+    sc failure ""%%S"" reset= 86400 actions= restart/60000/restart/60000/restart/60000
+)
+
+echo Configurações de falha aplicadas com sucesso para todos os serviços.
+
+
+echo --------------------------------------------------------------------------------------
+
+
+
+
+echo Após a execução do comando, verifique manualmente as permissões na pasta do sistema para garantir que todas as permissões foram aplicadas conforme esperado.
+echo Lembre também de abrir o suporte.exe se caso tenha instalado o sistema nesse instante.
+
+
+
+echo --------------------------------------------------------------------------------------
+
+
+pause
+endlocal
+";
+		}
+
+
+		private void RodarBatAdminVelho(string batPath)
+		{
+			if (!File.Exists(batPath))
+			{
+				Log("ERRO: Arquivo " + batPath + " não encontrado.", Color.Red);
+				return;
+			}
+			
+			try {
+				ProcessStartInfo psi = new ProcessStartInfo {
+					FileName = batPath,
+					UseShellExecute = true,
+					Verb = "runas"
+				};
+				Process.Start(psi);
+				Log("Executado com sucesso: " + Path.GetFileName(batPath), Cores.Verde);
+			} catch (Exception ex) {
+				Log("Erro ao executar " + Path.GetFileName(batPath) + ": " + ex.Message, Color.Red);
+			}
+		}
+		
+		
+		private void ExtrairRecursoSeNaoExistir(string resourceName, string destPath)
+		{
+			if (File.Exists(destPath)) return;
+			try {
+				using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+				{
+					if (stream != null)
+					{
+						using (FileStream fileStream = new FileStream(destPath, FileMode.Create))
+						{
+							byte[] buffer = new byte[8192];
+							int bytesRead;
+							while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+							{
+								fileStream.Write(buffer, 0, bytesRead);
+							}
+						}
+						Log("Arquivo " + resourceName + " extraido com sucesso.", Cores.Verde);
+					}
+				}
+			} catch (Exception ex) {
+				Log("Erro ao extrair " + resourceName + ": " + ex.Message, Color.Red);
+			}
+		}
+
+		
+		private void BaixarDependencia(string url, string destino)
+		{
+			if (File.Exists(destino)) return;
+			try {
+				using (WebClient wc = new WebClient())
+				{
+					// Bypass SSL se necessario
+					ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+					wc.DownloadFile(url, destino);
+					Log("Dependencia baixada: " + Path.GetFileName(destino), Cores.Verde);
+				}
+			} catch (Exception ex) {
+				Log("Erro ao baixar " + Path.GetFileName(destino) + ": " + ex.Message, Color.Red);
+			}
+		}
+
+		private void ExecutarInstalacaoServicoNSSM()
+
+		{
+			using(FormServicoForcaVendas frm = new FormServicoForcaVendas())
+			{
+				if (frm.ShowDialog() == DialogResult.OK)
+				{
+					
+  					
+  					
+  					string dir = frm.DiretorioSelecionado;
+  					string srv = frm.NomeServico;
+  					string batPath = Path.Combine(dir, "install_service_nssm.bat");
+  					
+					string urlNssm = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/instalar%20for%C3%A7a%20de%20vendas%20servi%C3%A7o/nssm.exe";
+					string urlBat = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/instalar%20for%C3%A7a%20de%20vendas%20servi%C3%A7o/install_service_nssm.bat";
+					
+					BaixarDependencia(urlNssm, Path.Combine(dir, "nssm.exe"));
+					BaixarDependencia(urlBat, batPath);
+
+
+
+					
+					if (!File.Exists(batPath)) {
+						MessageBox.Show("Arquivo " + batPath + " não encontrado na pasta especificada!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					
+					try {
+						string conteudo = File.ReadAllText(batPath, System.Text.Encoding.Default);
+						conteudo = Regex.Replace(conteudo, "set\\s+\"SERVICO=[^\"]*\"", "set \"SERVICO=" + srv + "\"");
+						File.WriteAllText(batPath, conteudo, System.Text.Encoding.Default);
+						Log("Nome do serviço alterado no arquivo .bat para: " + srv, Cores.TextoLog);
+					} catch (Exception ex) {
+						MessageBox.Show("Erro ao alterar o .bat: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					
+					try {
+						ProcessStartInfo psi = new ProcessStartInfo {
+							FileName = "cmd.exe",
+							Arguments = "/k \"\"" + batPath + "\" \"" + dir + "\"\"",
+							UseShellExecute = true,
+							Verb = "runas"
+						};
+						Process.Start(psi);
+						Log("Comando de instalação enviado para CMD Admin.", Cores.Verde);
+					} catch (Exception ex) {
+						Log("Erro ao iniciar CMD: " + ex.Message, Color.Red);
+					}
+				}
+			}
+		}
+
+
+		private void ConstruirPainelDownloads()
+		{
+			Label lblTitulo = new Label
+			{
+				Text = "O que deseja baixar?",
+				Location = new Point(20, 0),
+				AutoSize = true,
+				Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+				ForeColor = Color.White
+			};
+			
+			chkDownloads = new CheckedListBox
+			{
+				Location = new Point(20, 25),
+				Size = new Size(640, 150),
+				BackColor = Cores.FundoCard,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 10f),
+				BorderStyle = BorderStyle.FixedSingle,
+				CheckOnClick = true
+			};
+			
+			lblPastaDestino = new Label
+			{
+				Text = "Pasta de destino:",
+				Location = new Point(20, 185),
+				AutoSize = true,
+				Font = new Font("Segoe UI", 9f),
+				ForeColor = Color.White
+			};
+			
+			txtDestino = new TextBox
+			{
+				Location = new Point(20, 210),
+				Size = new Size(340, 25),
+				Font = new Font("Segoe UI", 10f),
+				BackColor = Cores.FundoApp,
+				ForeColor = Color.White,
+				BorderStyle = BorderStyle.FixedSingle,
+				Text = Path.Combine(Application.StartupPath, "Downloads")
+			};
+			
+			btnProcurar = new BotaoRounded
+			{
+				Text = "Procurar...",
+				Location = new Point(370, 207),
+				Size = new Size(90, 30),
+				NormalColor = Cores.NavyMedio,
+				HoverColor = Cores.AzulClaro,
+				BackColor = Cores.FundoApp,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 9f)
+			};
+			btnProcurar.Click += (s, e) => {
+				using (FolderBrowserDialog fbd = new FolderBrowserDialog()) {
+					if (fbd.ShowDialog() == DialogResult.OK) {
+						txtDestino.Text = fbd.SelectedPath;
+					}
+				}
+			};
+			
+			btnBaixarSelecionados = new BotaoRounded
+			{
+				Text = "Baixar selecionados",
+				Location = new Point(470, 207),
+				Size = new Size(130, 30),
+				NormalColor = Cores.Verde,
+				HoverColor = Color.LightGreen,
+				BackColor = Cores.FundoApp,
+				ForeColor = Color.White,
+				Font = new Font("Segoe UI", 9f, FontStyle.Bold)
+			};
+			btnBaixarSelecionados.Click += BtnBaixarSelecionados_Click;
+			
+			pnlDownloads.Controls.AddRange(new Control[6] { lblTitulo, chkDownloads, lblPastaDestino, txtDestino, btnProcurar, btnBaixarSelecionados });
+		}
+		
+		private async void BtnBaixarSelecionados_Click(object sender, EventArgs e)
+		{
+			if (chkDownloads.CheckedItems.Count == 0)
+			{
+				MessageBox.Show("Selecione pelo menos um item para baixar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+			
+			string pastaDestino = txtDestino.Text;
+			if (!Directory.Exists(pastaDestino))
+			{
+				try { Directory.CreateDirectory(pastaDestino); }
+				catch { MessageBox.Show("Erro ao criar a pasta de destino.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+			}
+			
+			btnBaixarSelecionados.Enabled = false;
+			foreach (object item in chkDownloads.CheckedItems)
+			{
+				SistemaDownload sys = item as SistemaDownload;
+				if (sys != null)
+				{
+					Log("Baixando " + sys.Nome + "...", Cores.Verde);
+					try
+					{
+						using (WebClient wc = new WebClient())
+						{
+							string arquivoSalvo = Path.Combine(pastaDestino, sys.ArquivoNome);
+							await wc.DownloadFileTaskAsync(new Uri(sys.UrlDownload), arquivoSalvo);
+							Log("OK - " + sys.Nome + " salvo em: " + arquivoSalvo, Cores.Laranja);
+						}
+					}
+					catch (Exception ex)
+					{
+						Log("ERRO ao baixar " + sys.Nome + ": " + ex.Message, Color.Red);
+					}
+				}
+			}
+			btnBaixarSelecionados.Enabled = true;
+			Log("Download de todos os itens selecionados concluído.", Cores.Verde);
+		}
+
+		private async void BuscarVersoesPainelDownloads()
+		{
+			try
+			{
+				Log("Buscando versões mais recentes para Downloads...", Cores.TextoLog);
+				listaDownloadsDisponiveis.Clear();
+				chkDownloads.Items.Clear();
+				
+				// 1. UpSystem, ForcaVendas e MobileUpWin via codigoup
+				HttpWebRequest req = (HttpWebRequest)WebRequest.Create("https://www.codigoup.com/painel/files/");
+				req.Timeout = 10000;
+				using (WebResponse resp = await req.GetResponseAsync())
+				using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+				{
+					string html = await sr.ReadToEndAsync();
+					string pattern = "<a href=\"([^\"]+\\.rar)\">[^<]*</a>\\s*</td>\\s*<td[^>]*>\\s*(\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2})\\s*</td>\\s*<td[^>]*>\\s*([^<]+?)\\s*</td>";
+					MatchCollection matches = Regex.Matches(html, pattern);
+					
+					var dict = new Dictionary<string, Tuple<string, DateTime, string, string>>();
+					foreach (Match m in matches)
+					{
+						string href = m.Groups[1].Value;
+						string nomeDecodado = Uri.UnescapeDataString(href);
+						DateTime dataMod = DateTime.ParseExact(m.Groups[2].Value, "yyyy-MM-dd HH:mm", null);
+						string tamanho = m.Groups[3].Value;
+						
+						string prefixo = null;
+						if (nomeDecodado.StartsWith("UpSystem")) prefixo = "UpSystem";
+						else if (nomeDecodado.StartsWith("ServidorForcaVendas")) prefixo = "ServidorForcaVendas";
+						else if (nomeDecodado.StartsWith("MobileUpWin")) prefixo = "MobileUpWin";
+						
+						if (prefixo != null)
+						{
+							if (!dict.ContainsKey(prefixo) || dict[prefixo].Item2 < dataMod)
+							{
+								dict[prefixo] = Tuple.Create("https://www.codigoup.com/painel/files/" + href, dataMod, tamanho, nomeDecodado);
+							}
+						}
+					}
+					
+					string[] order = new string[] { "UpSystem", "ServidorForcaVendas", "MobileUpWin" };
+					foreach (string prefixo in order)
+					{
+						if (dict.ContainsKey(prefixo))
+						{
+							var info = dict[prefixo];
+							listaDownloadsDisponiveis.Add(new SistemaDownload {
+								Nome = prefixo,
+								ArquivoNome = info.Item4,
+								UrlDownload = info.Item1,
+								Exibicao = info.Item3 + ", " + info.Item2.ToString("dd/MM/yyyy")
+							});
+						}
+					}
+				}
+				
+				// 2. eHub API
+				try {
+					HttpWebRequest reqEh = (HttpWebRequest)WebRequest.Create(ECARRINHO_URL);
+					reqEh.Timeout = 5000;
+					using (WebResponse respEh = await reqEh.GetResponseAsync())
+					using (StreamReader srEh = new StreamReader(respEh.GetResponseStream()))
+					{
+						string json = await srEh.ReadToEndAsync();
+						Match mVer = Regex.Match(json, "\"latest_version\"\\s*:\\s*\"([^\"]+)\"");
+						Match mUrl = Regex.Match(json, "\"download_url\"\\s*:\\s*\"([^\"]+)\"");
+						Match mSize = Regex.Match(json, "\"size_bytes\"\\s*:\\s*(\\d+)");
+						
+						if (mVer.Success && mUrl.Success)
+						{
+							string url = mUrl.Groups[1].Value.Replace("\\/", "/");
+							string version = mVer.Groups[1].Value;
+							long size = mSize.Success ? long.Parse(mSize.Groups[1].Value) : 0;
+							string sizeStr = size > 0 ? (size / 1048576.0).ToString("N1") + " MB" : "";
+							
+							listaDownloadsDisponiveis.Add(new SistemaDownload {
+								Nome = "eHub",
+								ArquivoNome = Path.GetFileName(new Uri(url).LocalPath),
+								UrlDownload = url,
+								Exibicao = "v" + version + (sizeStr != "" ? ", " + sizeStr : "")
+							});
+						}
+					}
+				} catch (Exception ex) { Log("Aviso: Falha ao checar eHub: " + ex.Message, Cores.Laranja); }
+				
+				// 3. GeSync
+				try {
+					HttpWebRequest reqGe = (HttpWebRequest)WebRequest.Create(GESYNC_URL);
+					reqGe.Method = "HEAD";
+					reqGe.Timeout = 5000;
+					using (WebResponse respGe = await reqGe.GetResponseAsync())
+					{
+						long contentLength = respGe.ContentLength;
+						string sizeStr = contentLength > 0 ? (contentLength / 1048576.0).ToString("N1") + " MB" : "";
+						
+						string dateStr = "";
+						string lastMod = respGe.Headers["Last-Modified"];
+						if (!string.IsNullOrEmpty(lastMod))
+						{
+							DateTime dt;
+							if (DateTime.TryParse(lastMod, out dt))
+								dateStr = dt.ToString("dd/MM/yyyy");
+						}
+						
+						listaDownloadsDisponiveis.Add(new SistemaDownload {
+							Nome = "GeSync",
+							ArquivoNome = "GeSyncSetup.zip",
+							UrlDownload = GESYNC_URL,
+							Exibicao = sizeStr + (dateStr != "" ? " (" + dateStr + ")" : "")
+						});
+					}
+				} catch (Exception ex) { Log("Aviso: Falha ao checar GeSync: " + ex.Message, Cores.Laranja); }
+				
+				foreach (var sys in listaDownloadsDisponiveis)
+				{
+					chkDownloads.Items.Add(sys, true);
+				}
+				
+			}
+			catch (Exception ex)
+			{
+				Log("Erro ao buscar versões para downloads: " + ex.Message, Color.Red);
+			}
+		}
+
 
 		private void ConstruirCardUp()
 		{
@@ -657,7 +1439,7 @@ namespace AtualizadorGUI
 				Location = new Point(20, 180),
 				Size = new Size(270, 10),
 				Style = ProgressBarStyle.Continuous,
-				Visible = false,
+				Visible = true,
 				Minimum = 0,
 				Maximum = 100
 			};
@@ -754,7 +1536,7 @@ namespace AtualizadorGUI
 				Location = new Point(20, 180),
 				Size = new Size(270, 10),
 				Style = ProgressBarStyle.Continuous,
-				Visible = false,
+				Visible = true,
 				Minimum = 0,
 				Maximum = 100
 			};
@@ -849,7 +1631,7 @@ namespace AtualizadorGUI
 			if (!ok)
 			{
 				lblStatus.ForeColor = Cores.Amarelo;
-				lblStatus.Text = "⚠ Versão não detectada localmente";
+				lblStatus.Text = "âš  Versão não detectada localmente";
 				Log(string.Format("[{0}] Não foi possível detectar versão local. Informe manualmente.", tipo), Cores.Amarelo);
 				string text = Interaction.InputBox(isUp ? "Digite a versão no formato  Major-Minor-Patch  (ex: 1-13-3):" : "Digite a versão no formato  Major-Patch  (ex: 2-16):", "Versão não detectada");
 				if (string.IsNullOrWhiteSpace(text))
@@ -889,7 +1671,7 @@ namespace AtualizadorGUI
 			if (disponiveis.Count == 0)
 			{
 				lblStatus.ForeColor = Cores.Verde;
-				lblStatus.Text = "✔ Sistema atualizado!";
+				lblStatus.Text = "âœ” Sistema atualizado!";
 				Log(string.Format("[{0}] Nenhuma atualização encontrada. Sistema está na versão mais recente.", tipo), Cores.Verde);
 				SetStatus("Nenhuma atualização disponível.");
 				MessageBox.Show(string.Format("O {0} está na versão mais recente!\nNenhuma atualização encontrada no servidor.", tipo), "Tudo atualizado!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -940,7 +1722,7 @@ namespace AtualizadorGUI
 			string destino = Path.Combine(targetDir, nomeArq);
 			string urlFinal = baseUrl + escolha + ".rar";
 			lblStatus.ForeColor = Cores.AzulClaro;
-			lblStatus.Text = "⬇ Baixando...";
+			lblStatus.Text = "â¬‡ Baixando...";
 			SetStatus(string.Format("Baixando {0}...", nomeArq));
 			Log(string.Format("[{0}] Iniciando download: {1}", tipo, nomeArq), Cores.AzulClaro);
 			Stopwatch sw = Stopwatch.StartNew();
@@ -964,10 +1746,10 @@ namespace AtualizadorGUI
 				sw.Stop();
 				double totalMB = (double)new FileInfo(destino).Length / 1024.0 / 1024.0;
 				lblStatus.ForeColor = Cores.Verde;
-				lblStatus.Text = string.Format("✔ {0} baixado!", escolha);
+				lblStatus.Text = string.Format("âœ” {0} baixado!", escolha);
 				lblVersao.Text = string.Format("Versão local: {0}", escolha);
 				SetStatus("Download concluído!");
-				Log(string.Format("[{0}] Download concluído! {1:F1} MB em {2:F1}s → {3}", tipo, totalMB, sw.Elapsed.TotalSeconds, destino), Cores.Verde);
+				Log(string.Format("[{0}] Download concluído! {1:F1} MB em {2:F1}s â†’ {3}", tipo, totalMB, sw.Elapsed.TotalSeconds, destino), Cores.Verde);
 				MessageBox.Show(string.Format("Download concluído com sucesso!\n\nArquivo: {0}\nTamanho: {1:F1} MB\nSalvo em: {2}", nomeArq, totalMB, targetDir), "Download OK", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				DialogResult resExtrair = MessageBox.Show("O arquivo de atualização foi baixado com sucesso.\n\nDeseja extrair os arquivos automaticamente agora para finalizar a atualização?", "Extrair Atualização", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (resExtrair == DialogResult.Yes && ExtrairArquivo(destino, targetDir, tipo))
@@ -979,7 +1761,7 @@ namespace AtualizadorGUI
 			catch (Exception ex)
 			{
 				lblStatus.ForeColor = Cores.Vermelho;
-				lblStatus.Text = "✘ Erro no download";
+				lblStatus.Text = "âœ˜ Erro no download";
 				SetStatus("Erro: " + ex.Message);
 				Log(string.Format("[{0}] ERRO: {1}", tipo, ex.Message), Cores.Vermelho);
 				MessageBox.Show("Erro ao baixar:\n" + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -1352,7 +2134,9 @@ namespace AtualizadorGUI
 						Version vAtual = new Version(VERSAO_ATUAL);
 						if (vServidor > vAtual)
 						{
-							btnUpdateApp.Visible = true;
+							btnUpdateApp.NormalColor = Color.Crimson; 
+							btnUpdateApp.HoverColor = Color.Red;
+							btnUpdateApp.Text = "Atualização Disponível!";
 							Log("Uma nova versão do Suporte Infocenter (" + versaoServidor + ") está disponível!", Cores.Verde);
 						}
 					}
@@ -1367,38 +2151,62 @@ namespace AtualizadorGUI
 		private async void BtnUpdateApp_Click(object sender, EventArgs e)
 		{
 			btnUpdateApp.Enabled = false;
-			btnUpdateApp.Text = "Baixando atualização... Aguarde.";
+			btnUpdateApp.Text = "Buscando...";
 			try
 			{
-				string novoExe = Path.Combine(Application.StartupPath, "Suporte_Novo.exe");
-				using (WebClient webClient = new WebClient())
+				HttpWebRequest req = (HttpWebRequest)WebRequest.Create(URL_VERSAO + "?t=" + DateTime.Now.Ticks);
+				req.Timeout = 5000;
+				string versaoServidor = "";
+				using (WebResponse resp = await req.GetResponseAsync())
+				using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
 				{
-					await webClient.DownloadFileTaskAsync(new Uri(URL_EXE), novoExe);
+					versaoServidor = (await sr.ReadToEndAsync()).Trim();
 				}
 
-				string batPath = Path.Combine(Application.StartupPath, "update.bat");
-				string batScript = "@echo off\r\n" +
-								   "timeout /t 2 /nobreak > NUL\r\n" +
-								   "del /f /q \"" + Application.ExecutablePath + "\"\r\n" +
-								   "ren \"" + novoExe + "\" \"" + Path.GetFileName(Application.ExecutablePath) + "\"\r\n" +
-								   "start \"\" \"" + Application.ExecutablePath + "\"\r\n" +
-								   "del \"%~f0\"";
-				File.WriteAllText(batPath, batScript);
-
-				ProcessStartInfo psi = new ProcessStartInfo
+				if (!string.IsNullOrEmpty(versaoServidor) && versaoServidor != VERSAO_ATUAL)
 				{
-					FileName = batPath,
-					UseShellExecute = true,
-					WindowStyle = ProcessWindowStyle.Hidden
-				};
-				Process.Start(psi);
-				Application.Exit();
+					Version vServidor = new Version(versaoServidor);
+					Version vAtual = new Version(VERSAO_ATUAL);
+					if (vServidor > vAtual)
+					{
+						btnUpdateApp.Text = "Nova versão (" + versaoServidor + ") encontrada! Baixando...";
+						
+						string novoExe = Path.Combine(Application.StartupPath, "Suporte_Novo.exe");
+						using (WebClient webClient = new WebClient())
+						{
+							await webClient.DownloadFileTaskAsync(new Uri(URL_EXE), novoExe);
+						}
+
+						string batPath = Path.Combine(Application.StartupPath, "update.bat");
+						string batScript = "@echo off\r\n" +
+										   "timeout /t 2 /nobreak > NUL\r\n" +
+										   "del /f /q \"" + Application.ExecutablePath + "\"\r\n" +
+										   "ren \"" + novoExe + "\" \"" + Path.GetFileName(Application.ExecutablePath) + "\"\r\n" +
+										   "start \"\" \"" + Application.ExecutablePath + "\"\r\n" +
+										   "del \"%~f0\"";
+						File.WriteAllText(batPath, batScript);
+
+						ProcessStartInfo psi = new ProcessStartInfo
+						{
+							FileName = batPath,
+							UseShellExecute = true,
+							WindowStyle = ProcessWindowStyle.Hidden
+						};
+						Process.Start(psi);
+						Application.Exit();
+						return;
+					}
+				}
+				
+				MessageBox.Show("Você já está utilizando a versão mais recente (" + VERSAO_ATUAL + ") do Suporte Infocenter.", "Atualizado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				btnUpdateApp.Enabled = true;
+				btnUpdateApp.Text = "Suporte: Atualizado";
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Erro ao atualizar: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Não foi possível verificar/baixar atualizações. Erro: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				btnUpdateApp.Enabled = true;
-				btnUpdateApp.Text = "NOVA VERSÃO DISPONÍVEL! CLIQUE PARA ATUALIZAR O SUPORTE INFOCENTER.";
+				btnUpdateApp.Text = "Suporte: Atualizado";
 			}
 		}
 	}
@@ -1555,6 +2363,114 @@ namespace AtualizadorGUI
 			};
 			base.Controls.AddRange(new Control[4] { label, chkList, btnOk, btnCancelar });
 		}
+}
+		internal class FormServicoForcaVendas : Form
+	{
+		public string DiretorioSelecionado { get; private set; }
+		public string NomeServico { get; private set; }
+		
+		private TextBox txtDiretorio;
+		private TextBox txtNomeServico;
+		
+		public FormServicoForcaVendas()
+		{
+			Text = "Configurar Serviço - Força de Vendas";
+			Size = new Size(520, 420);
+			StartPosition = FormStartPosition.CenterParent;
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false; MinimizeBox = false;
+			BackColor = Color.FromArgb(28, 28, 28);
+			ForeColor = Color.White;
+			
+			string existentes = DetectarServicosExistentes();
+			
+			Label lblInfo = new Label {
+				Text = "Serviços encontrados no Windows:\n" + existentes,
+				Location = new Point(20, 20),
+				AutoSize = true,
+				Font = new Font("Segoe UI", 9f),
+				ForeColor = Color.FromArgb(255, 165, 0)
+			};
+			
+			Label lblDir = new Label {
+				Text = "Diretório do Força de Vendas:",
+				Location = new Point(20, 150), AutoSize = true, Font = new Font("Segoe UI", 10f)
+			};
+			txtDiretorio = new TextBox {
+				Location = new Point(20, 175), Size = new Size(350, 25), Font = new Font("Segoe UI", 10f),
+				Text = "C:\\UpSystem\\ForcaVendas",
+				BackColor = Color.FromArgb(45, 45, 48), ForeColor = Color.White, BorderStyle = BorderStyle.FixedSingle
+			};
+			Button btnProcurar = new Button {
+				Text = "Procurar...", Location = new Point(380, 173), Size = new Size(90, 28),
+				BackColor = Color.FromArgb(0, 122, 204), ForeColor = Color.White, FlatStyle = FlatStyle.Flat
+			};
+			btnProcurar.FlatAppearance.BorderSize = 0;
+			btnProcurar.Click += (s, e) => {
+				using(FolderBrowserDialog fbd = new FolderBrowserDialog()) {
+					if (fbd.ShowDialog() == DialogResult.OK) txtDiretorio.Text = fbd.SelectedPath;
+				}
+			};
+			
+			Label lblNome = new Label {
+				Text = "Nome desejado para o Serviço:",
+				Location = new Point(20, 215), AutoSize = true, Font = new Font("Segoe UI", 10f)
+			};
+			txtNomeServico = new TextBox {
+				Location = new Point(20, 240), Size = new Size(350, 25), Font = new Font("Segoe UI", 10f),
+				Text = "ForcaDeVendas",
+				BackColor = Color.FromArgb(45, 45, 48), ForeColor = Color.White, BorderStyle = BorderStyle.FixedSingle
+			};
+			
+			Button btnOk = new Button {
+				Text = "Confirmar e Instalar", Location = new Point(20, 300), Size = new Size(180, 40),
+				BackColor = Color.MediumSeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat,
+				Font = new Font("Segoe UI", 10f, FontStyle.Bold)
+			};
+			btnOk.FlatAppearance.BorderSize = 0;
+			btnOk.Click += (s, e) => {
+				if (string.IsNullOrWhiteSpace(txtNomeServico.Text) || string.IsNullOrWhiteSpace(txtDiretorio.Text)) {
+					MessageBox.Show("Preencha todos os campos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return;
+				}
+				DiretorioSelecionado = txtDiretorio.Text;
+				NomeServico = txtNomeServico.Text;
+				DialogResult = DialogResult.OK;
+				Close();
+			};
+			
+			Controls.AddRange(new Control[] { lblInfo, lblDir, txtDiretorio, btnProcurar, lblNome, txtNomeServico, btnOk });
+		}
+		
+		private string DetectarServicosExistentes()
+		{
+			try {
+				int count = 0;
+				string lista = "";
+				foreach(System.ServiceProcess.ServiceController sc in System.ServiceProcess.ServiceController.GetServices()) {
+					if (sc.ServiceName.IndexOf("Forca", StringComparison.OrdinalIgnoreCase) >= 0) {
+						count++;
+						lista += "- " + sc.ServiceName + " (" + sc.Status + ")\n";
+					}
+				}
+				if (count == 0) return "Nenhum serviço com a palavra 'Forca' encontrado.";
+				return "Total encontrados: " + count + "\n\n" + lista;
+			} catch { return "Não foi possível detectar."; }
+		}
+	}
+
+
+	internal class SistemaDownload
+	{
+		public string Nome { get; set; }
+		public string ArquivoNome { get; set; }
+		public string UrlDownload { get; set; }
+		public string Exibicao { get; set; }
+		
+		public override string ToString()
+		{
+			return Nome + " - " + ArquivoNome + " (" + Exibicao + ")";
+		}
 	}
 	internal static class Program
 	{
@@ -1567,3 +2483,7 @@ namespace AtualizadorGUI
 		}
 	}
 }
+
+
+
+
