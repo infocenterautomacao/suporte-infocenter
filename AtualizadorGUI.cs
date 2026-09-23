@@ -20,8 +20,8 @@ using Microsoft.VisualBasic;
 [assembly: CompilationRelaxations(8)]
 [assembly: AssemblyProduct("Suporte Infocenter")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
-[assembly: AssemblyFileVersion("1.3.3.0")]
-[assembly: AssemblyVersion("1.3.3.0")]
+[assembly: AssemblyFileVersion("1.3.4.0")]
+[assembly: AssemblyVersion("1.3.4.0")]
 namespace AtualizadorGUI
 {
 	internal static class Cores
@@ -187,7 +187,7 @@ namespace AtualizadorGUI
 	{
 		private const string URL_VERSAO = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/config/versao.txt";
 		private const string URL_EXE = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/bin/SuporteInfocenter.exe";
-		private const string VERSAO_ATUAL = "1.3.3.0";
+		private const string VERSAO_ATUAL = "1.3.4.0";
 		private BotaoRounded btnUpdateApp;
 
 		private const string BASE_UP = "https://www.codigoup.com/painel/files/UpSystem%20v";

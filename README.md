@@ -1,6 +1,11 @@
 ﻿# Suporte Infocenter
 
 ## Changelog
+### Versão 1.3.4.0
+- Modificação estrutural: Injetado App Manifest (pp.manifest) nativo de elevação de privilégios (equireAdministrator). O SuporteInfocenter.exe agora sempre exigirá e iniciará com permissões de Administrador pelo UAC do Windows automaticamente, sendo desnecessário usar a opção 'Executar como Administrador'.
+- A aba 'Ações' teve seu layout refatorado para exibir o gerenciador em uma nova Janela Flutuante (Popup).
+- Implementado botão separado para 'Reiniciar Serviço' (com lógica inteligente de parada e inicialização garantida).
+
 ### Versão 1.3.3.0
 - O AssemblyVersion foi alinhado com a versão do app.
 - Nova aba: Ações.
@@ -22,5 +27,6 @@
 - Nova Aba Rotinas (Scripts embutidos).
 - Instalação inteligente do Força de Vendas via NSSM incorporado.
 - Reposicionamento do layout e do botão de update do próprio programa.
+
 
 

@@ -3,7 +3,7 @@ $outputFile = "bin\SuporteInfocenter.exe"
 $iconFile = "icone.png"
 
 Write-Host "Compilando $sourceFile com Recursos para $outputFile..."
-& $env:windir\Microsoft.NET\Framework\v4.0.30319\csc.exe /target:winexe /out:$outputFile /win32icon:$iconFile /resource:logo.png /resource:icone.png /reference:System.Windows.Forms.dll,System.Drawing.dll,System.IO.Compression.FileSystem.dll,System.ServiceProcess.dll,System.Management.dll,Microsoft.VisualBasic.dll $sourceFile
+& $env:windir\Microsoft.NET\Framework\v4.0.30319\csc.exe /target:winexe /out:$outputFile /win32icon:$iconFile /win32manifest:app.manifest /resource:logo.png /resource:icone.png /reference:System.Windows.Forms.dll,System.Drawing.dll,System.IO.Compression.FileSystem.dll,System.ServiceProcess.dll,System.Management.dll,Microsoft.VisualBasic.dll $sourceFile
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Compilado com sucesso: $outputFile" -ForegroundColor Green
