@@ -1,5 +1,5 @@
 $sourceFile = "AtualizadorGUI.cs"
-$outputFile = "atualizador.exe"
+$outputFile = "SuporteInfocenter.exe"
 $iconFile = "icone.png"
 
 Write-Host "Compilando $sourceFile com Recursos para $outputFile..."
@@ -7,7 +7,7 @@ Write-Host "Compilando $sourceFile com Recursos para $outputFile..."
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Compilado com sucesso: $outputFile" -ForegroundColor Green
-    Copy-Item $outputFile "D:\projetos antigravity\exe atualizador up\atualizador.exe" -Force
+    Copy-Item $outputFile "D:\projetos antigravity\exe atualizador up\SuporteInfocenter.exe" -Force
 } else {
     Write-Host "Erro na compilação." -ForegroundColor Red
 }

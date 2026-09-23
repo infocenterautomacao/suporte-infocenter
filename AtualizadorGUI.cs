@@ -2178,11 +2178,16 @@ endlocal
 						}
 
 						string batPath = Path.Combine(Application.StartupPath, "update.bat");
+						string exPath = Application.ExecutablePath;
+						string dir = Path.GetDirectoryName(exPath);
+						string finalName = "SuporteInfocenter.exe";
+						string finalPath = Path.Combine(dir, finalName);
+						
 						string batScript = "@echo off\r\n" +
 										   "timeout /t 2 /nobreak > NUL\r\n" +
-										   "del /f /q \"" + Application.ExecutablePath + "\"\r\n" +
-										   "ren \"" + novoExe + "\" \"" + Path.GetFileName(Application.ExecutablePath) + "\"\r\n" +
-										   "start \"\" \"" + Application.ExecutablePath + "\"\r\n" +
+										   "del /f /q \"" + exPath + "\"\r\n" +
+										   "ren \"" + novoExe + "\" \"" + finalName + "\"\r\n" +
+										   "start \"\" \"" + finalPath + "\"\r\n" +
 										   "del \"%~f0\"";
 						File.WriteAllText(batPath, batScript);
 
