@@ -19,8 +19,8 @@ using Microsoft.VisualBasic;
 [assembly: CompilationRelaxations(8)]
 [assembly: AssemblyProduct("Suporte Infocenter")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
-[assembly: AssemblyFileVersion("1.3.0.0")]
-[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.1.0")]
+[assembly: AssemblyVersion("1.3.1.0")]
 namespace AtualizadorGUI
 {
 	internal static class Cores
@@ -186,7 +186,7 @@ namespace AtualizadorGUI
 	{
 		private const string URL_VERSAO = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/versao.txt";
 		private const string URL_EXE = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/SuporteInfocenter.exe";
-		private const string VERSAO_ATUAL = "1.3.0.0";
+		private const string VERSAO_ATUAL = "1.3.1.0";
 		private BotaoRounded btnUpdateApp;
 
 		private const string BASE_UP = "https://www.codigoup.com/painel/files/UpSystem%20v";
@@ -460,7 +460,7 @@ namespace AtualizadorGUI
 			};
 			lblEmpresa = new Label
 			{
-				Text = "ATUALIZAÃ‡ÃƒO DE SISTEMA",
+				Text = "SUPORTE",
 				Font = new Font("Segoe UI", 13f, FontStyle.Bold),
 				ForeColor = Color.White,
 				AutoSize = true
