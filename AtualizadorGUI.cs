@@ -9,6 +9,7 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.ServiceProcess;
+using System.Management;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +20,8 @@ using Microsoft.VisualBasic;
 [assembly: CompilationRelaxations(8)]
 [assembly: AssemblyProduct("Suporte Infocenter")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
-[assembly: AssemblyFileVersion("1.3.1.0")]
-[assembly: AssemblyVersion("1.3.1.0")]
+[assembly: AssemblyFileVersion("1.3.3.0")]
+[assembly: AssemblyVersion("1.3.3.0")]
 namespace AtualizadorGUI
 {
 	internal static class Cores
@@ -186,7 +187,7 @@ namespace AtualizadorGUI
 	{
 		private const string URL_VERSAO = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/config/versao.txt";
 		private const string URL_EXE = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/bin/SuporteInfocenter.exe";
-		private const string VERSAO_ATUAL = "1.3.2.0";
+		private const string VERSAO_ATUAL = "1.3.3.0";
 		private BotaoRounded btnUpdateApp;
 
 		private const string BASE_UP = "https://www.codigoup.com/painel/files/UpSystem%20v";
@@ -627,7 +628,10 @@ namespace AtualizadorGUI
 			};
 			btnTabLocal.Click += (s, e) => AlternarAba(0);
 			
-			btnTabRotinas = new BotaoRounded { Text = "Rotinas", Location = new Point(380, 5), Size = new Size(150, 35), NormalColor = Cores.NavyMedio, HoverColor = Color.FromArgb(70, 70, 90), BackColor = Cores.FundoApp, ForeColor = Color.White, Font = new Font("Segoe UI", 10f, FontStyle.Bold), Cursor = Cursors.Hand }; btnTabRotinas.Click += (s, e) => AlternarAba(2); pnlTabs.Controls.AddRange(new Control[3] { btnTabDownloads, btnTabLocal, btnTabRotinas });
+			btnTabRotinas = new BotaoRounded { Text = "Rotinas", Location = new Point(380, 5), Size = new Size(150, 35), NormalColor = Cores.NavyMedio, HoverColor = Color.FromArgb(70, 70, 90), BackColor = Cores.FundoApp, ForeColor = Color.White, Font = new Font("Segoe UI", 10f, FontStyle.Bold), Cursor = Cursors.Hand }; btnTabRotinas.Click += (s, e) => AlternarAba(2); 
+			btnTabAcoes = new BotaoRounded { Text = "Ações", Location = new Point(540, 5), Size = new Size(120, 35), NormalColor = Cores.NavyMedio, HoverColor = Color.FromArgb(70, 70, 90), BackColor = Cores.FundoApp, ForeColor = Color.White, Font = new Font("Segoe UI", 10f, FontStyle.Bold), Cursor = Cursors.Hand }; 
+			btnTabAcoes.Click += (s, e) => AlternarAba(3); 
+			pnlTabs.Controls.AddRange(new Control[4] { btnTabDownloads, btnTabLocal, btnTabRotinas, btnTabAcoes });
 			base.Controls.Add(pnlTabs);
 			
 			pnlMainArea = new Panel
@@ -658,7 +662,10 @@ namespace AtualizadorGUI
 			};
 			ConstruirPainelDownloads();
 			
-			ConstruirPainelRotinas(); pnlMainArea.Controls.AddRange(new Control[3] { pnlDownloads, pnlLocal, pnlRotinas });
+			ConstruirPainelRotinas(); 
+			pnlAcoes = new Panel { Dock = DockStyle.Fill, BackColor = Cores.FundoApp, Visible = false };
+			ConstruirPainelAcoes();
+			pnlMainArea.Controls.AddRange(new Control[4] { pnlDownloads, pnlLocal, pnlRotinas, pnlAcoes });
 		}
 		
 		private void AlternarAba(int abaId)
@@ -666,18 +673,40 @@ namespace AtualizadorGUI
 			pnlDownloads.Visible = (abaId == 1);
 			pnlLocal.Visible = (abaId == 0);
 			pnlRotinas.Visible = (abaId == 2);
+			pnlAcoes.Visible = (abaId == 3);
 			btnTabDownloads.NormalColor = (abaId == 1) ? Cores.AzulClaro : Cores.NavyMedio;
 			btnTabLocal.NormalColor = (abaId == 0) ? Cores.AzulClaro : Cores.NavyMedio;
 			btnTabRotinas.NormalColor = (abaId == 2) ? Cores.AzulClaro : Cores.NavyMedio;
+			btnTabAcoes.NormalColor = (abaId == 3) ? Cores.AzulClaro : Cores.NavyMedio;
 			btnTabRotinas.Refresh();
+			btnTabAcoes.Refresh();
 			btnTabDownloads.Refresh();
 			btnTabLocal.Refresh();
 		}
 
-				private BotaoRounded btnTabRotinas;
+						private BotaoRounded btnTabAcoes;
+		private Panel pnlAcoes;
+		private BotaoRounded btnTabRotinas;
 		private Panel pnlRotinas;
 		private CheckedListBox chkRotinas;
 		private BotaoRounded btnExecutarRotinas;
+
+		
+		private void ConstruirPainelAcoes()
+		{
+			Label lblAcoesTitulo = new Label { Text = "Ações Avançadas do Sistema", Location = new Point(20, 20), AutoSize = true, Font = new Font("Segoe UI", 12f, FontStyle.Bold), ForeColor = Color.White };
+			Label lblAcoesDesc = new Label { Text = "Acesse o gerenciador para visualizar e manipular processos e serviços nativos.", Location = new Point(20, 50), AutoSize = true, Font = new Font("Segoe UI", 9.5f), ForeColor = Color.LightGray };
+			
+			BotaoRounded btnAbrirGerenciador = new BotaoRounded { Text = "Abrir Gerenciador de Processos e Serviços", Location = new Point(20, 90), Size = new Size(350, 40), NormalColor = Cores.AzulClaro, HoverColor = Color.LightSkyBlue, Font = new Font("Segoe UI", 10f, FontStyle.Bold), Cursor = Cursors.Hand };
+			btnAbrirGerenciador.Click += (s, e) => {
+				using (FormGerenciadorAcoes frm = new FormGerenciadorAcoes())
+				{
+					frm.ShowDialog(this);
+				}
+			};
+			
+			pnlAcoes.Controls.AddRange(new Control[] { lblAcoesTitulo, lblAcoesDesc, btnAbrirGerenciador });
+		}
 
 		private void ConstruirPainelRotinas()
 		{
@@ -2345,6 +2374,171 @@ endlocal
 			}
 		}
 	}
+	
+	internal class FormGerenciadorAcoes : Form
+	{
+		private ListView lvAcoes;
+		private BotaoRounded btnAtualizarAcoes;
+		private BotaoRounded btnAcaoMatar;
+		private BotaoRounded btnAcaoIniciar;
+		private BotaoRounded btnAcaoParar;
+		private BotaoRounded btnAcaoReiniciar;
+		
+		class SystemActionItem
+		{
+			public string Tipo; 
+			public string Nome;
+			public string Status;
+			public string Usuario;
+			public int Pid;
+			public string NomeServico;
+			public SystemActionItem(string t, string n, string s, string u, int p = 0, string srv = "")
+			{
+				Tipo = t; Nome = n; Status = s; Usuario = u; Pid = p; NomeServico = srv;
+			}
+		}
+		
+		public FormGerenciadorAcoes()
+		{
+			Text = "Gerenciador de Processos e Serviços";
+			Size = new Size(700, 450);
+			StartPosition = FormStartPosition.CenterParent;
+			BackColor = Cores.FundoApp;
+			ShowIcon = false;
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			
+			Label lblAcoesTitulo = new Label { Text = "Processos e Serviços em Execução", Location = new Point(20, 10), AutoSize = true, Font = new Font("Segoe UI", 10f, FontStyle.Bold), ForeColor = Color.White };
+			
+			lvAcoes = new ListView { Location = new Point(20, 35), Size = new Size(640, 300), View = View.Details, FullRowSelect = true, GridLines = true, BackColor = Color.FromArgb(40, 45, 55), ForeColor = Color.White, Font = new Font("Segoe UI", 9f), BorderStyle = BorderStyle.FixedSingle, HideSelection = false };
+			lvAcoes.Columns.Add("Tipo", 80);
+			lvAcoes.Columns.Add("Nome", 220);
+			lvAcoes.Columns.Add("PID / Status", 90);
+			lvAcoes.Columns.Add("Usuário", 220);
+			
+						btnAtualizarAcoes = new BotaoRounded { Text = "Atualizar", Location = new Point(20, 350), Size = new Size(100, 30), NormalColor = Cores.AzulClaro, HoverColor = Color.LightSkyBlue, Font = new Font("Segoe UI", 9f, FontStyle.Bold), Cursor = Cursors.Hand };
+			btnAcaoMatar = new BotaoRounded { Text = "Finalizar", Location = new Point(130, 350), Size = new Size(120, 30), NormalColor = Color.Crimson, HoverColor = Color.Red, Font = new Font("Segoe UI", 9f, FontStyle.Bold), Cursor = Cursors.Hand };
+			btnAcaoIniciar = new BotaoRounded { Text = "Iniciar Servi\u00e7o", Location = new Point(260, 350), Size = new Size(120, 30), NormalColor = Cores.Verde, HoverColor = Color.LimeGreen, Font = new Font("Segoe UI", 9f, FontStyle.Bold), Cursor = Cursors.Hand };
+			btnAcaoParar = new BotaoRounded { Text = "Parar Servi\u00e7o", Location = new Point(390, 350), Size = new Size(120, 30), NormalColor = Color.DarkOrange, HoverColor = Color.Orange, Font = new Font("Segoe UI", 9f, FontStyle.Bold), Cursor = Cursors.Hand };
+			btnAcaoReiniciar = new BotaoRounded { Text = "Reiniciar", Location = new Point(520, 350), Size = new Size(120, 30), NormalColor = Color.DodgerBlue, HoverColor = Color.DeepSkyBlue, Font = new Font("Segoe UI", 9f, FontStyle.Bold), Cursor = Cursors.Hand };
+			
+			btnAtualizarAcoes.Click += (s, e) => CarregarAcoes();
+			btnAcaoMatar.Click += BtnAcaoMatar_Click;
+			btnAcaoIniciar.Click += (s, e) => AcaoServico("iniciar");
+			btnAcaoParar.Click += (s, e) => AcaoServico("parar");
+			btnAcaoReiniciar.Click += (s, e) => AcaoServico("reiniciar");
+			
+			Controls.AddRange(new Control[] { lblAcoesTitulo, lvAcoes, btnAtualizarAcoes, btnAcaoMatar, btnAcaoIniciar, btnAcaoParar, btnAcaoReiniciar });
+			
+			CarregarAcoes();
+		}
+
+		private string GetProcessOwner(int processId)
+		{
+			try {
+				string query = "Select * From Win32_Process Where ProcessID = " + processId;
+				using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
+				using (ManagementObjectCollection processList = searcher.Get())
+				{
+					foreach (ManagementObject obj in processList)
+					{
+						object[] argList = new object[] { string.Empty, string.Empty };
+						int returnVal = Convert.ToInt32(obj.InvokeMethod("GetOwner", argList));
+						if (returnVal == 0)
+						{
+							return argList[1] + "\\" + argList[0];
+						}
+					}
+				}
+			} catch { }
+			return "SYSTEM";
+		}
+		
+		private void CarregarAcoes()
+		{
+			lvAcoes.Items.Clear();
+			var procs = Process.GetProcesses();
+			foreach (var p in procs)
+			{
+				try {
+					string pName = p.ProcessName.ToLower();
+					if (pName.Contains("upsystem") || pName.Contains("forcadevendas"))
+					{
+						string owner = GetProcessOwner(p.Id);
+						ListViewItem lvi = new ListViewItem("Processo");
+						lvi.SubItems.Add(p.ProcessName + ".exe");
+						lvi.SubItems.Add(p.Id.ToString());
+						lvi.SubItems.Add(owner);
+						lvi.Tag = new SystemActionItem("Processo", p.ProcessName, p.Id.ToString(), owner, p.Id, "");
+						lvAcoes.Items.Add(lvi);
+					}
+				} catch { }
+			}
+
+			var servicos = ServiceController.GetServices();
+			foreach (var s in servicos)
+			{
+				try {
+					string dName = s.DisplayName.ToLower();
+					string sName = s.ServiceName.ToLower();
+					if (dName.Contains("forcadevendas") || sName.Contains("forcadevendas") || 
+					    dName.Contains("firebird") || sName.Contains("firebird"))
+					{
+						ListViewItem lvi = new ListViewItem("Serviço");
+						lvi.SubItems.Add(s.DisplayName);
+						lvi.SubItems.Add(s.Status.ToString());
+						lvi.SubItems.Add("SYSTEM");
+						lvi.Tag = new SystemActionItem("Serviço", s.DisplayName, s.Status.ToString(), "SYSTEM", 0, s.ServiceName);
+						lvAcoes.Items.Add(lvi);
+					}
+				} catch { }
+			}
+		}
+		
+		private void BtnAcaoMatar_Click(object sender, EventArgs e)
+		{
+			if (lvAcoes.SelectedItems.Count == 0) { MessageBox.Show("Selecione um processo na lista."); return; }
+			var tag = lvAcoes.SelectedItems[0].Tag as SystemActionItem;
+			if (tag == null || tag.Tipo != "Processo") { MessageBox.Show("O item selecionado não é um processo."); return; }
+			
+			try {
+				var proc = Process.GetProcessById(tag.Pid);
+				proc.Kill();
+				MessageBox.Show("Processo " + tag.Nome + " (" + tag.Pid + ") finalizado com sucesso.");
+				CarregarAcoes();
+			} catch (Exception ex) {
+				MessageBox.Show("Erro ao matar processo: " + ex.Message);
+			}
+		}
+		
+		private void AcaoServico(string acao)
+		{
+			if (lvAcoes.SelectedItems.Count == 0) { MessageBox.Show("Selecione um serviço na lista."); return; }
+			var tag = lvAcoes.SelectedItems[0].Tag as SystemActionItem;
+			if (tag == null || tag.Tipo != "Serviço") { MessageBox.Show("O item selecionado não é um serviço."); return; }
+			
+			try {
+				ServiceController sc = new ServiceController(tag.NomeServico);
+				if (acao == "iniciar") {
+					if (sc.Status != ServiceControllerStatus.Running) {
+						sc.Start();
+						sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+						MessageBox.Show("Serviço " + tag.Nome + " iniciado.");
+					} else { MessageBox.Show("Serviço já está em execução."); }
+				} else if (acao == "parar") {
+					if (sc.Status == ServiceControllerStatus.Running) {
+						sc.Stop();
+						sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+						MessageBox.Show("Serviço " + tag.Nome + " parado.");
+					} else { MessageBox.Show("Serviço não está em execução."); }
+				}
+				CarregarAcoes();
+			} catch (Exception ex) {
+				MessageBox.Show("Erro ao manipular serviço: " + ex.Message + "\n\nExecute o Atualizador como Administrador.");
+			}
+		}
+	}
+
 	internal class FormSelecionarVersao : Form
 	{
 		private ListBox lstVersoes;

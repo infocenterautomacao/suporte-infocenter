@@ -1,6 +1,12 @@
 ﻿# Suporte Infocenter
 
 ## Changelog
+### Versão 1.3.3.0
+- O AssemblyVersion foi alinhado com a versão do app.
+- Nova aba: Ações.
+- Adicionado Gerenciador de Processos nativo via WMI (Windows Management Instrumentation) para monitorar e finalizar UpSystem.exe e ForcaDeVendas.exe em uso pelos usuários.
+- Adicionado controle de Serviços (Start/Stop) para serviços do Firebird e Força de Vendas.
+
 ### Versão 1.3.2.0
 - Nova rotina inserida: Duplicador de instância de Firebird e modificação de porta.
 - Novo download adicionado: Firebird-UpSystem (Firebird-5.0.3.1683-0-windows-x64.exe) embutido nativamente na aba Downloads.
@@ -16,4 +22,5 @@
 - Nova Aba Rotinas (Scripts embutidos).
 - Instalação inteligente do Força de Vendas via NSSM incorporado.
 - Reposicionamento do layout e do botão de update do próprio programa.
+
 
