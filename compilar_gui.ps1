@@ -1,5 +1,5 @@
 $sourceFile = "AtualizadorGUI.cs"
-$outputFile = "SuporteInfocenter.exe"
+$outputFile = "bin\SuporteInfocenter.exe"
 $iconFile = "icone.png"
 
 Write-Host "Compilando $sourceFile com Recursos para $outputFile..."

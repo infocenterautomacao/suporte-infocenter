@@ -184,8 +184,8 @@ namespace AtualizadorGUI
 	}
 	internal class FormPrincipal : Form
 	{
-		private const string URL_VERSAO = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/versao.txt";
-		private const string URL_EXE = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/SuporteInfocenter.exe";
+		private const string URL_VERSAO = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/config/versao.txt";
+		private const string URL_EXE = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/bin/SuporteInfocenter.exe";
 		private const string VERSAO_ATUAL = "1.3.1.0";
 		private BotaoRounded btnUpdateApp;
 
@@ -416,7 +416,7 @@ namespace AtualizadorGUI
 					{
 						string arg = (ok ? string.Format("{0}-{1}-{2}", maj, min, pat) : "Não detectada");
 						lblUpVersao.Text = (ok ? string.Format("Versão local: {0}", arg) : "Nenhum arquivo local encontrado");
-						lblUpStatus.Text = (ok ? "âœ” Local OK" : "âš  Não encontrado");
+						lblUpStatus.Text = (ok ? "✓ Local OK" : "X  Não encontrado");
 						lblUpStatus.ForeColor = (ok ? Cores.Verde : Cores.Vermelho);
 						lblUpPasta.Text = "Pasta: " + pathUp;
 					}
@@ -424,7 +424,7 @@ namespace AtualizadorGUI
 					{
 						string arg2 = (ok ? string.Format("{0}-{1}", maj, pat) : "Não detectada");
 						lblForcaVersao.Text = (ok ? string.Format("Versão local: {0}", arg2) : "Nenhum arquivo local encontrado");
-						lblForcaStatus.Text = (ok ? "âœ” Local OK" : "âš  Não encontrado");
+						lblForcaStatus.Text = (ok ? "✓ Local OK" : "X  Não encontrado");
 						lblForcaStatus.ForeColor = (ok ? Cores.Verde : Cores.Vermelho);
 						lblForcaPasta.Text = "Pasta: " + pathForca;
 					}
@@ -1071,8 +1071,8 @@ endlocal
   					string srv = frm.NomeServico;
   					string batPath = Path.Combine(dir, "install_service_nssm.bat");
   					
-					string urlNssm = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/instalar%20for%C3%A7a%20de%20vendas%20servi%C3%A7o/nssm.exe";
-					string urlBat = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/instalar%20for%C3%A7a%20de%20vendas%20servi%C3%A7o/install_service_nssm.bat";
+					string urlNssm = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/dependencias/nssm.exe";
+					string urlBat = "https://raw.githubusercontent.com/infocenterautomacao/suporte-infocenter/main/dependencias/install_service_nssm.bat";
 					
 					BaixarDependencia(urlNssm, Path.Combine(dir, "nssm.exe"));
 					BaixarDependencia(urlBat, batPath);
